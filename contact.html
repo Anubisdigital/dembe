@@ -1,0 +1,749 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demble Landsites · 1.5M+ · Luganda toggle</title>
+  <!-- favicon: dembe.png (direct) -->
+  <link rel="icon" type="image/png" href="dembe.png">
+  <!-- Font Awesome 6 & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <style>
+    /* ----- RESET & GLOBAL (original style preserved + new additions) ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #FFFFFF;
+      color: #1E1E1E;
+      font-family: 'Inter', sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    :root {
+      --pure-black: #000000;
+      --rich-black: #1E1E1E;
+      --pure-gold: #D4AF37;
+      --whatsapp-green: #25D366;
+      --white: #FFFFFF;
+      --light-gray: #F5F5F5;
+      --shadow: 0 10px 25px rgba(0,0,0,0.05);
+    }
+
+    /* ----- HEADER (black, logo no border) with lang toggle ----- */
+    .site-header {
+      background: var(--pure-black);
+      padding: 0.6rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: var(--shadow);
+    }
+    .header-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .logo-img {
+      height: 45px;
+      width: auto;
+      display: block;
+      border: none;
+    }
+    .brand-text {
+      color: var(--white);
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .brand-text .gold {
+      color: var(--pure-gold);
+      background: transparent;
+      margin-left: 0.2rem;
+    }
+
+    /* header right: language toggle + burger */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* ----- LANG BUTTON with bounce animation (stops after 5s) ----- */
+    .lang-btn {
+      background: transparent;
+      border: 2px solid var(--pure-gold);
+      color: var(--pure-gold);
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+    .lang-btn:hover {
+      background: var(--pure-gold);
+      color: var(--pure-black);
+    }
+
+    /* bounce keyframes – up & down movement */
+    @keyframes gentleBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* class applied via JS for 5‑second animation (0.5s * 10 = 5s) */
+    .lang-btn.bounce-5s {
+      animation: gentleBounce 0.5s ease 10;
+    }
+
+    /* ----- BURGER MENU (gold to white X) ----- */
+    .burger-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      transition: 0.3s;
+      z-index: 1100;
+    }
+    .burger-btn span {
+      display: block;
+      width: 28px;
+      height: 3px;
+      background: var(--pure-gold);
+      border-radius: 3px;
+      transition: 0.3s;
+    }
+    .burger-btn.open span {
+      background: var(--white);
+    }
+    .burger-btn.open span:nth-child(1) {
+      transform: rotate(45deg) translate(6px, 6px);
+    }
+    .burger-btn.open span:nth-child(2) {
+      opacity: 0;
+    }
+    .burger-btn.open span:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
+    /* ----- OVERLAY MENU (fullscreen, black/gold) unchanged ----- */
+    .menu-overlay {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 100%;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.98);
+      backdrop-filter: blur(4px);
+      z-index: 1050;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .menu-overlay.active {
+      right: 0;
+    }
+    .menu-content ul {
+      list-style: none;
+      text-align: center;
+    }
+    .menu-content li {
+      margin: 2rem 0;
+    }
+    .menu-content a {
+      color: var(--pure-gold);
+      text-decoration: none;
+      font-size: clamp(2rem, 8vw, 3rem);
+      font-weight: 700;
+      transition: 0.2s;
+      border-bottom: 3px solid transparent;
+      padding-bottom: 5px;
+    }
+    .menu-content a:hover {
+      border-bottom-color: var(--pure-gold);
+    }
+
+    /* ----- MAIN CONTENT (responsive) ----- */
+    .main-content {
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 1.5rem auto;
+      padding: 0 1.5rem;
+    }
+
+    /* headline */
+    .page-headline h1 {
+      font-size: clamp(2rem, 7vw, 3.5rem);
+      font-weight: 800;
+      color: var(--rich-black);
+      border-left: 8px solid var(--pure-gold);
+      padding-left: 1.2rem;
+      line-height: 1.2;
+      margin-bottom: 0.8rem;
+    }
+    .subhead {
+      font-size: clamp(1.1rem, 4vw, 1.5rem);
+      margin: 0.5rem 0 1.5rem;
+      color: #333;
+      font-weight: 500;
+    }
+
+    /* price badge from 1.5M */
+    .price-badge {
+      display: inline-block;
+      background: var(--pure-black);
+      color: var(--pure-gold);
+      font-weight: 800;
+      font-size: clamp(1.3rem, 5vw, 2rem);
+      padding: 0.4rem 1.8rem;
+      border-radius: 60px;
+      border: 3px solid var(--pure-gold);
+      margin: 0.5rem 0 1.2rem;
+      box-shadow: 0 5px 0 rgba(0,0,0,0.2);
+      letter-spacing: 0.5px;
+    }
+    .price-badge i {
+      margin-right: 0.7rem;
+      font-size: 1.4rem;
+    }
+
+    /* phone block */
+    .phone-block {
+      background: var(--rich-black);
+      color: var(--pure-gold);
+      display: inline-block;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 800;
+      padding: 0.6rem 1.5rem;
+      border-radius: 60px;
+      border: 2px solid var(--pure-gold);
+      margin: 0.5rem 0 1.8rem;
+      box-shadow: 0 8px 0 rgba(0,0,0,0.15);
+    }
+    .phone-block i {
+      margin-right: 0.8rem;
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+    }
+
+    /* BUTTONS */
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      margin: 2rem 0 2rem;
+    }
+    .btn {
+      flex: 1 1 auto;
+      min-width: 200px;
+      padding: 1rem 1.5rem;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: clamp(1.2rem, 4vw, 1.7rem);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      border: 3px solid var(--rich-black);
+      box-shadow: 0 6px 0 var(--rich-black);
+      transition: 0.15s;
+    }
+    .btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 0 var(--rich-black);
+    }
+    .btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 3px 0 var(--rich-black);
+    }
+    .btn-call {
+      background: var(--white);
+      color: var(--rich-black);
+    }
+    .btn-wa {
+      background: var(--whatsapp-green);
+      color: white;
+      border-color: #075e54;
+      box-shadow: 0 6px 0 #075e54;
+    }
+    .btn-wa:hover {
+      box-shadow: 0 10px 0 #075e54;
+    }
+
+    /* ----- NEW descriptive contact paragraph (creative & professional) ----- */
+    .contact-description {
+      background: #fcfaf5;
+      border-left: 6px solid var(--pure-gold);
+      border-radius: 30px;
+      padding: 1.8rem 2rem;
+      margin: 2rem 0 1.5rem;
+      font-size: 1.2rem;
+      line-height: 1.6;
+      box-shadow: 0 10px 25px -8px rgba(0,0,0,0.1);
+      color: #2a2a2a;
+    }
+    .contact-description i {
+      color: var(--pure-gold);
+      margin-right: 0.5rem;
+      font-size: 1.5rem;
+      vertical-align: middle;
+    }
+
+    /* location card */
+    .location-card {
+      background: white;
+      border: 3px solid var(--pure-gold);
+      border-radius: 40px;
+      padding: 1.5rem 2rem;
+      margin: 2rem 0 2.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1.2rem;
+      box-shadow: 0 15px 30px -10px rgba(212,175,55,0.2);
+    }
+    .loc-icon {
+      background: var(--rich-black);
+      color: var(--pure-gold);
+      font-size: 2.2rem;
+      padding: 0.8rem;
+      border-radius: 30px;
+      border: 2px solid var(--pure-gold);
+    }
+    .loc-text {
+      font-size: clamp(1.2rem, 4vw, 1.8rem);
+      font-weight: 700;
+      color: var(--rich-black);
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .service-tag {
+      background: var(--rich-black);
+      color: var(--pure-gold);
+      padding: 0.4rem 1.4rem;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border: 2px solid var(--pure-gold);
+      white-space: nowrap;
+    }
+
+    /* info row */
+    .info-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem 2rem;
+      margin: 1.5rem 0;
+      border-top: 2px solid var(--pure-gold);
+      border-bottom: 2px solid var(--pure-gold);
+      padding: 1.2rem 0;
+    }
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .info-item i {
+      background: var(--rich-black);
+      color: var(--pure-gold);
+      padding: 0.5rem;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      width: 2.2rem;
+      text-align: center;
+    }
+
+    /* map placeholder */
+    .map-box {
+      border-radius: 40px;
+      overflow: hidden;
+      border: 3px solid var(--pure-gold);
+      margin: 2rem 0;
+    }
+    .map-placeholder {
+      background: var(--rich-black);
+      color: var(--pure-gold);
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+    .map-placeholder i {
+      font-size: 2.5rem;
+      margin-bottom: 0.8rem;
+    }
+    .map-placeholder p {
+      font-size: clamp(1rem, 3.5vw, 1.3rem);
+    }
+
+    /* footer */
+    .site-footer {
+      background: var(--rich-black);
+      color: #ddd;
+      padding: 2.5rem 1.5rem 1.5rem;
+      border-top: 6px solid var(--pure-gold);
+      margin-top: 2rem;
+    }
+    .footer-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 2rem;
+    }
+    .footer-col h4 {
+      color: var(--pure-gold);
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+    }
+    .footer-col a, .footer-col p {
+      color: #ccc;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 0.5rem;
+      transition: 0.2s;
+      font-size: 0.95rem;
+    }
+    .footer-col a:hover {
+      color: var(--pure-gold);
+      padding-left: 5px;
+    }
+    .copyright {
+      text-align: center;
+      border-top: 1px solid #444;
+      max-width: 1200px;
+      margin: 2rem auto 0;
+      padding-top: 1.5rem;
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+    .gold {
+      color: var(--pure-gold);
+    }
+
+    @media (max-width: 500px) {
+      .brand-text {
+        font-size: 1.2rem;
+      }
+      .logo-img {
+        height: 38px;
+      }
+      .burger-btn {
+        width: 40px;
+        height: 40px;
+      }
+      .location-card {
+        padding: 1.2rem;
+      }
+      .service-tag {
+        white-space: normal;
+        font-size: 1rem;
+      }
+      .lang-btn {
+        padding: 0.2rem 0.7rem;
+        font-size: 0.9rem;
+      }
+      .contact-description {
+        padding: 1.3rem;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- black header with logo, language toggle and burger -->
+  <header class="site-header">
+    <div class="header-container">
+      <div class="logo-area">
+        <img src="dembe.png" alt="Demble Landsites" class="logo-img">
+        <span class="brand-text">DEMBLE<span class="gold">.LAND</span></span>
+      </div>
+      <div class="header-right">
+        <button class="lang-btn" id="langToggle" aria-label="Switch language">Luganda</button>
+        <button class="burger-btn" id="burgerBtn" aria-label="Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- overlay menu -->
+  <div class="menu-overlay" id="menuOverlay">
+    <div class="menu-content"> <span style="color: white; position: absolute; top: 5px; right:5px; ">exit</span>
+      <ul>
+        <li><a href="index.html" id="menuHome" data-i18n="menuHome">HOME</a></li>
+        <li><a href="contact.html" id="menuContact" data-i18n="menuContact">CONTACT</a></li>
+        <li><a href="location.html" id="menuLocation" data-i18n="menuLocation">LOCATION</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- main content -->
+  <main class="main-content">
+    <div class="page-headline">
+      <h1 data-i18n="contactTitle">CONTACT US</h1>
+    </div>
+    <div class="subhead" data-i18n="subhead">
+      Buy & Sell Land · Nakifuma / Mayanganga
+    </div>
+
+    <!-- price badge: starts from 1.5M -->
+    <div class="price-badge">
+      <i class="fas fa-tag"></i> <span data-i18n="priceText">Plots from 1.5M UGX</span>
+    </div>
+
+    <!-- phone block -->
+    <div class="phone-block">
+      <i class="fas fa-phone-alt"></i> 0752 264 757
+    </div>
+
+    <!-- buttons with translatable spans -->
+    <div class="button-row">
+      <a href="tel:0752264757" class="btn btn-call">
+        <i class="fas fa-phone"></i> <span data-i18n="callNow">CALL NOW</span>
+      </a>
+      <a href="https://wa.me/256752264757?text=Hello%20Demble%20Landsites%2C%20interested%20in%20land%20at%20Nakifuma." target="_blank" class="btn btn-wa">
+        <i class="fab fa-whatsapp"></i> <span data-i18n="whatsapp">WHATSAPP</span>
+      </a>
+    </div>
+
+    <!-- +++ NEW creative & professional contact description (translatable) +++ -->
+    <div class="contact-description">
+      <i class="fas fa-handshake"></i>
+      <span data-i18n="contactDesc">Get in touch with Demble Landsites – your trusted partner for land in Nakifuma & Mayanganga. Whether buying or selling, we offer professional guidance, transparent deals, and a personal touch.</span>
+    </div>
+
+    <!-- location card with translatable parts -->
+    <div class="location-card">
+      <div class="loc-icon"><i class="fas fa-map-pin"></i></div>
+      <div class="loc-text">
+        <span data-i18n="locationTown">NAKIFUMA · MAYANGANGA TOWN</span>
+        <span class="service-tag" data-i18n="buySellTag"><i class="fas fa-hand-holding-usd" style="margin-right: 0.4rem;"></i>BUY & SELL</span>
+      </div>
+    </div>
+
+    <!-- info row (icons + spans) -->
+    <div class="info-row">
+      <div class="info-item"><i class="fas fa-clock"></i> <span data-i18n="hours">Mon–Sat 8am–6pm</span></div>
+      <div class="info-item"><i class="fas fa-tree"></i> <span data-i18n="viewings">Viewings</span></div>
+      <div class="info-item"><i class="fas fa-ruler-combined"></i> <span data-i18n="plotsAcreage">Plots & acreage</span></div>
+    </div>
+
+    <!-- map placeholder with translatable texts -->
+    <div class="map-box">
+      <div class="map-placeholder">
+        <i class="fas fa-map-marked-alt"></i>
+        <p data-i18n="mapAddress">📍 Nakifuma, Mayanganga town</p>
+        <p style="font-size: 0.95rem; opacity: 0.8;" data-i18n="mapNote">(exact location on call/WhatsApp)</p>
+      </div>
+    </div>
+
+    <!-- guide paragraph -->
+    <p style="margin: 1.5rem 0; border-left: 6px solid var(--pure-gold); padding-left: 1.2rem; font-size: clamp(0.95rem, 3vw, 1.1rem);">
+      <i class="fas fa-check-circle" style="color: var(--pure-gold);"></i> <span data-i18n="guideText">We personally guide you in Nakifuma & Mayanganga.</span>
+    </p>
+  </main>
+
+  <!-- footer (black) with translatable items -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4 data-i18n="footerDemble">Demble Landsites</h4>
+        <p><i class="fas fa-map-marker-alt gold"></i> <span data-i18n="footerAddress">Nakifuma, Mayanganga</span></p>
+        <p><i class="fas fa-phone gold"></i> 0752 264 757</p>
+        <p><i class="fab fa-whatsapp gold"></i> 0752 264 757</p>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="navTitle">Navigate</h4>
+        <a href="index.html" data-i18n="footerHome">Home</a>
+        <a href="contact.html" data-i18n="footerContact">Contact</a>
+        <a href="location.html" data-i18n="footerLocation">Location</a>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="servicesTitle">Services</h4>
+        <a href="#" data-i18n="serviceBuy">Buying land</a>
+        <a href="#" data-i18n="serviceSell">Selling land</a>
+        <a href="#" data-i18n="serviceView">Plot viewing</a>
+      </div>
+    </div>
+    <div class="copyright">
+      <p>© 2025 Demble Landsites — <span class="gold" data-i18n="goldStandard">gold standard</span> in land</p>
+    </div>
+  </footer>
+
+  <!-- JavaScript: burger + language toggle with translations + 5‑second bounce -->
+  <script>
+    (function() {
+      // ---------- BURGER MENU (unchanged) ----------
+      const burger = document.getElementById('burgerBtn');
+      const overlay = document.getElementById('menuOverlay');
+      const menuLinks = document.querySelectorAll('.menu-content a');
+
+      burger.addEventListener('click', () => {
+        burger.classList.toggle('open');
+        overlay.classList.toggle('active');
+        document.body.style.overflow = overlay.classList.contains('active') ? 'hidden' : 'auto';
+      });
+
+      menuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          burger.classList.remove('open');
+          overlay.classList.remove('active');
+          document.body.style.overflow = 'auto';
+        });
+      });
+
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          burger.classList.remove('open');
+          overlay.classList.remove('active');
+          document.body.style.overflow = 'auto';
+        }
+      });
+
+      // Highlight current page
+      const currentFile = window.location.pathname.split('/').pop() || 'index.html';
+      menuLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href === currentFile) {
+          link.style.borderBottom = '3px solid var(--pure-gold)';
+          link.style.color = '#FFFFFF';
+        }
+      });
+
+      // ---------- LANGUAGE TOGGLE (English / Luganda) ----------
+      const langToggle = document.getElementById('langToggle');
+      // translation dictionary (including new creative description)
+      const translations = {
+        en: {
+          contactTitle: 'CONTACT US',
+          subhead: 'Buy & Sell Land · Nakifuma / Mayanganga',
+          priceText: 'Plots from 1.5M UGX',
+          callNow: 'CALL NOW',
+          whatsapp: 'WHATSAPP',
+          locationTown: 'NAKIFUMA · MAYANGANGA TOWN',
+          buySellTag: 'BUY & SELL',
+          hours: 'Mon–Sat 8am–6pm',
+          viewings: 'Viewings',
+          plotsAcreage: 'Plots & acreage',
+          mapAddress: '📍 Nakifuma, Mayanganga town',
+          mapNote: '(exact location on call/WhatsApp)',
+          guideText: 'We personally guide you in Nakifuma & Mayanganga.',
+          menuHome: 'HOME',
+          menuContact: 'CONTACT',
+          menuLocation: 'LOCATION',
+          footerDemble: 'Demble Landsites',
+          footerAddress: 'Nakifuma, Mayanganga',
+          navTitle: 'Navigate',
+          footerHome: 'Home',
+          footerContact: 'Contact',
+          footerLocation: 'Location',
+          servicesTitle: 'Services',
+          serviceBuy: 'Buying land',
+          serviceSell: 'Selling land',
+          serviceView: 'Plot viewing',
+          goldStandard: 'gold standard',
+          // NEW creative description
+          contactDesc: 'Get in touch with Demble Landsites – your trusted partner for land in Nakifuma & Mayanganga. Whether buying or selling, we offer professional guidance, transparent deals, and a personal touch.'
+        },
+        lg: {
+          contactTitle: 'TUNAMBUZE',
+          subhead: 'Okugula n\'Okutunda Ettaka · Nakifuma / Mayanganga',
+          priceText: 'Ebitundu okuva ku 1.5M UGX',
+          callNow: 'YITA KATI',
+          whatsapp: 'WHATSUP',
+          locationTown: 'NAKIFUMA · MAYANGANGA TOWN',
+          buySellTag: 'OKUGULA N\'OKUTUNDA',
+          hours: 'Ku Bbalaza ne Lwamukaaga 8am–6pm',
+          viewings: 'Okulaba',
+          plotsAcreage: 'Ebisenge n\'Ebyenyanja',
+          mapAddress: '📍 Nakifuma, ekibuga kya Mayanganga',
+          mapNote: '(ekifo kitufu ku lwa simu/Whatsup)',
+          guideText: 'Tukulagirira mu Nakifuma ne Mayanganga.',
+          menuHome: 'EWA YAMWE',
+          menuContact: 'KU TUNAMBUZE',
+          menuLocation: 'ENDO GYE LIRI',
+          footerDemble: 'Demble Landsites',
+          footerAddress: 'Nakifuma, Mayanganga',
+          navTitle: 'Okulambika',
+          footerHome: 'Ewa yamwe',
+          footerContact: 'Kutukirira',
+          footerLocation: 'Endo gye liri',
+          servicesTitle: 'Emirimu',
+          serviceBuy: 'Okugula ettaka',
+          serviceSell: 'Okutunda ettaka',
+          serviceView: 'Okulaba ettaka',
+          goldStandard: 'ekirabo ky\'zaabu',
+          // NEW Luganda creative description
+          contactDesc: 'Tukwatagane ne Demble Landsites – omukwano gw\'omukutu mu by\'ettaka e Nakifuma ne Mayanganga. Oba ogula oba otunda, tuwa obulagirizi obwa nnamu, endagaano ennyangu, n\'okwagala.'
+        }
+      };
+
+      let currentLang = 'en'; // default
+
+      function setLanguage(lang) {
+        const elements = document.querySelectorAll('[data-i18n]');
+        elements.forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          if (translations[lang] && translations[lang][key]) {
+            if (el.classList.contains('service-tag')) {
+              // keep the icon, change text after it
+              const iconHtml = '<i class="fas fa-hand-holding-usd" style="margin-right: 0.4rem;"></i>';
+              el.innerHTML = iconHtml + translations[lang][key];
+            } else {
+              el.innerText = translations[lang][key];
+            }
+          }
+        });
+        // update toggle button text
+        langToggle.innerText = currentLang === 'en' ? 'Luganda' : 'English';
+      }
+
+      langToggle.addEventListener('click', () => {
+        currentLang = currentLang === 'en' ? 'lg' : 'en';
+        setLanguage(currentLang);
+      });
+
+      // initialize (English)
+      setLanguage('en');
+
+      // ---------- 5‑second bounce on Luganda button (gigo up & down and stop) ----------
+      // Add the bounce class on page load – animation lasts 5s (0.5s * 10 iterations) then stops.
+      langToggle.classList.add('bounce-5s');
+      // Optional: remove class after animation ends to avoid any potential style leftover, but it's fine.
+      // The animation will run 10 times (5 seconds) and then stop automatically.
+    })();
+  </script>
+  <!-- dembe.png favicon already in head -->
+</body>
+</html>
