@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Demble Landsites · premium plots</title>
+  <!-- favicon & logo: dembe.png (direct) -->
+  <link rel="icon" type="image/png" href="dembe.png">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Playfair Display + Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ----- RESET & GLOBAL ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #FFFFFF;
+      color: #1E1E1E;
+      font-family: 'Inter', sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    :root {
+      --black: #1E1E1E;
+      --pure-black: #000000;
+      --gold: #D4AF37;
+      --gold-light: #f5e3b3;
+      --white: #FFFFFF;
+      --off-white: #F9F9F9;
+      --shadow: 0 15px 35px -10px rgba(0,0,0,0.15);
+      --border-radius-card: 28px;
+    }
+
+    /* ----- HEADER (black) with logo image ----- */
+    .site-header {
+      background: var(--pure-black);
+      padding: 0.6rem 1.2rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 2px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .logo-img {
+      height: 42px;
+      width: auto;
+      display: block;
+      border: none;
+      background: transparent;
+    }
+    .site-logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--white);
+      line-height: 1;
+    }
+    .site-logo-text .gold-dot {
+      color: var(--gold);
+      font-size: 2rem;
+      margin-left: 2px;
+    }
+
+    /* ----- BURGER (white on black) ----- */
+    .burger-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      transition: 0.3s;
+      z-index: 1100;
+      position: relative;
+    }
+    .burger-btn span {
+      display: block;
+      width: 28px;
+      height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+    .burger-btn.open span {
+      background: var(--white);
+    }
+    .burger-btn.open span:nth-child(1) {
+      transform: rotate(45deg) translate(6px, 6px);
+    }
+    .burger-btn.open span:nth-child(2) {
+      opacity: 0;
+    }
+    .burger-btn.open span:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
+    /* ----- OVERLAY MENU (fullscreen dark) with white X ----- */
+    .menu-overlay {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 100%;
+      height: 100vh;
+      background: rgba(0,0,0,0.98);
+      backdrop-filter: blur(6px);
+      z-index: 1050;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .menu-overlay.active {
+      right: 0;
+    }
+
+    /* white X close button (as requested) */
+    .close-overlay {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      color: var(--white);
+      font-size: 3rem;
+      line-height: 1;
+      cursor: pointer;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      transition: 0.2s;
+      background: rgba(0,0,0,0.5);
+      z-index: 1060;
+    }
+    .close-overlay:hover {
+      background: var(--gold);
+      color: var(--pure-black);
+    }
+
+    .menu-content {
+      text-align: center;
+      width: 100%;
+      padding: 2rem;
+    }
+    .menu-content ul {
+      list-style: none;
+    }
+    .menu-content li {
+      margin: 2rem 0;
+    }
+    .menu-content a {
+      color: var(--white);
+      text-decoration: none;
+      font-size: 2rem;
+      font-weight: 500;
+      font-family: 'Playfair Display', serif;
+      transition: color 0.2s;
+      border-bottom: 2px solid transparent;
+      padding-bottom: 4px;
+    }
+    .menu-content a:hover {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+    }
+    /* language selector inside menu */
+    .lang-selector {
+      margin-top: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      color: var(--white);
+      font-size: 1.2rem;
+      border: 1px solid rgba(212,175,55,0.4);
+      border-radius: 60px;
+      padding: 0.7rem 1.5rem;
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .lang-selector:hover {
+      background: rgba(212,175,55,0.15);
+      border-color: var(--gold);
+    }
+    .lang-selector i {
+      color: var(--gold);
+      font-size: 1.4rem;
+    }
+    .lang-selector span {
+      font-weight: 600;
+    }
+
+    /* ----- LANGUAGE POPUP (auto 5s) with OK/Cancel ----- */
+    .lang-popup {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--pure-black);
+      border: 2px solid var(--gold);
+      border-radius: 60px;
+      padding: 1rem 2rem;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      transition: opacity 0.5s, visibility 0.5s;
+      opacity: 1;
+      visibility: visible;
+    }
+    .lang-popup.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .lang-popup p {
+      color: var(--white);
+      font-weight: 500;
+      font-size: 1rem;
+    }
+    .popup-buttons {
+      display: flex;
+      gap: 0.8rem;
+    }
+    .popup-btn {
+      background: transparent;
+      border: 2px solid var(--gold);
+      color: var(--gold);
+      padding: 0.5rem 1.5rem;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .popup-btn:hover {
+      background: var(--gold);
+      color: var(--pure-black);
+    }
+    .popup-btn.cancel {
+      border-color: #666;
+      color: #ccc;
+    }
+    .popup-btn.cancel:hover {
+      background: #666;
+      color: white;
+    }
+
+    /* ----- MAIN CONTENT (compact) ----- */
+    .main-content {
+      flex: 1;
+      max-width: 600px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.5rem 1rem;
+    }
+
+    .section-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--black);
+      margin-bottom: 1.2rem;
+      letter-spacing: -0.02em;
+      border-left: 6px solid var(--gold);
+      padding-left: 1rem;
+    }
+
+    /* plots grid: 2 columns, tight margins */
+    .plots-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.7rem;
+    }
+
+    .plot-card {
+      background: var(--white);
+      border-radius: var(--border-radius-card);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: all 0.25s;
+      border: 1px solid rgba(0,0,0,0.03);
+      position: relative;
+      cursor: pointer;
+    }
+    .plot-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 30px -8px rgba(212,175,55,0.2);
+    }
+
+    .badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: var(--gold);
+      color: var(--black);
+      font-weight: 700;
+      font-size: 0.65rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 40px;
+      z-index: 5;
+      border: 1px solid rgba(0,0,0,0.1);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .plot-image {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      display: block;
+      border-bottom: 2px solid var(--gold-light);
+    }
+
+    .plot-info {
+      padding: 0.7rem 0.6rem 0.8rem;
+    }
+
+    .plot-title {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--black);
+      margin-bottom: 0.3rem;
+      line-height: 1.3;
+    }
+
+    .price-wrapper {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.2rem 0.4rem;
+    }
+    .old-price {
+      font-size: 0.7rem;
+      color: #888;
+      text-decoration: line-through;
+    }
+    .current-price {
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--gold);
+      letter-spacing: -0.2px;
+    }
+
+    /* empty state */
+    .empty-message {
+      grid-column: span 2;
+      text-align: center;
+      padding: 3rem 1rem;
+      background: #fafafa;
+      border-radius: 40px;
+      border: 2px dashed var(--gold);
+      color: #666;
+    }
+
+    /* modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.95);
+      z-index: 2000;
+      display: none;
+      flex-direction: column;
+      backdrop-filter: blur(5px);
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-image-area {
+      width: 100%;
+      height: 70vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #111;
+    }
+    .modal-image-area img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .modal-details {
+      height: 30vh;
+      background: var(--white);
+      border-top-left-radius: 30px;
+      border-top-right-radius: 30px;
+      padding: 1.5rem 1.5rem 1rem;
+      overflow-y: auto;
+      color: var(--black);
+    }
+    .modal-details h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      margin-bottom: 0.2rem;
+    }
+    .modal-price {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--gold);
+      margin: 0.2rem 0 0.5rem;
+    }
+    .modal-description {
+      font-size: 0.9rem;
+      color: #333;
+      margin-bottom: 0.8rem;
+      line-height: 1.4;
+    }
+    .modal-map-thumb {
+      background: #eee;
+      border-radius: 20px;
+      padding: 0.6rem 1rem;
+      margin: 0.8rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      border: 1px solid var(--gold);
+    }
+    .modal-map-thumb i {
+      color: var(--gold);
+      font-size: 1.5rem;
+    }
+    .modal-map-thumb a {
+      color: var(--black);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      word-break: break-all;
+    }
+    .btn-order {
+      background: var(--black);
+      border: 2px solid var(--gold);
+      color: var(--gold);
+      padding: 0.9rem 1.5rem;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      width: 100%;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      margin-top: 0.5rem;
+    }
+    .btn-order:hover {
+      background: var(--gold);
+      color: var(--black);
+    }
+    .close-modal {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: 2px solid var(--gold);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      cursor: pointer;
+      z-index: 2100;
+    }
+    .close-modal:hover {
+      background: var(--gold);
+      color: black;
+    }
+
+    /* ----- FOOTER (enriched with contact & links) ----- */
+    .site-footer {
+      background: var(--pure-black);
+      color: #ddd;
+      padding: 2rem 1.5rem 1.2rem;
+      border-top: 4px solid var(--gold);
+      margin-top: 2rem;
+    }
+    .footer-grid {
+      max-width: 600px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+    .footer-col h4 {
+      color: var(--gold);
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .footer-col a, .footer-col p {
+      color: #aaa;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      transition: 0.2s;
+    }
+    .footer-col a:hover {
+      color: var(--gold);
+      padding-left: 5px;
+    }
+    .footer-col i {
+      color: var(--gold);
+      width: 20px;
+      margin-right: 6px;
+    }
+    .copyright {
+      text-align: center;
+      max-width: 600px;
+      margin: 1.5rem auto 0;
+      padding-top: 1.2rem;
+      border-top: 1px solid #333;
+      color: #888;
+      font-size: 0.8rem;
+    }
+    .gold-text {
+      color: var(--gold);
+      font-weight: 600;
+    }
+    @media (max-width: 400px) {
+      .footer-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- black header with logo image (dembe.png) -->
+  <header class="site-header">
+    <div class="logo-area">
+      <img src="dembe.png" alt="Demble Landsites" class="logo-img">
+      <span class="site-logo-text">DEMBLE<span class="gold-dot">.</span>LAND</span>
+    </div>
+    <button class="burger-btn" id="burgerBtn" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <!-- overlay menu with white X close -->
+  <div class="menu-overlay" id="menuOverlay">
+    <div class="close-overlay" id="closeOverlayBtn"><i class="fas fa-times"></i></div>
+    <div class="menu-content">
+      <ul>
+        <li><a href="index.html" data-i18n="home">HOME</a></li>
+        <li><a href="#" data-i18n="ourLands">OUR LANDS</a></li>
+        <li><a href="https://maps.app.goo.gl/3bmYE8Mckg99ZufY8?g_st=aw" target="_blank" data-i18n="viewLocation">VIEW LOCATION</a></li>
+        <li><a href="#" data-i18n="contactUs">CONTACT US</a></li>
+      </ul>
+      <!-- language toggle (EN/LU) -->
+      <div class="lang-selector" id="langToggle">
+        <i class="fas fa-globe"></i>
+        <span id="langDisplay">EN / LU</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- language popup (auto-dismiss after 5s) -->
+  <div class="lang-popup" id="langPopup">
+    <p data-i18n="popupText">Change language to Luganda?</p>
+    <div class="popup-buttons">
+      <button class="popup-btn" id="popupOk"><span data-i18n="ok">OK</span></button>
+      <button class="popup-btn cancel" id="popupCancel"><span data-i18n="cancel">Cancel</span></button>
+    </div>
+  </div>
+
+  <!-- main content -->
+  <main class="main-content">
+    <h1 class="section-headline" data-i18n="headline">PREMIUM LAND PLOTS</h1>
+    <div class="plots-grid" id="plotsGrid">
+      <!-- dynamic content from Firebase -->
+      <div class="empty-message" id="loadingMessage">Loading lands...</div>
+    </div>
+  </main>
+
+  <!-- modal for image click -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="close-modal" id="closeModalBtn">&times;</div>
+    <div class="modal-image-area" id="modalImageArea">
+      <img src="" alt="" id="modalImage">
+    </div>
+    <div class="modal-details" id="modalDetails">
+      <h3 id="modalTitle"></h3>
+      <div class="modal-price" id="modalPrice"></div>
+      <div class="modal-description" id="modalDesc"></div>
+      <div class="modal-map-thumb" id="modalMap">
+        <i class="fas fa-map"></i>
+        <a href="#" id="modalMapLink" target="_blank">📍 View on Google Maps</a>
+      </div>
+      <button class="btn-order" id="orderBtn"><i class="fas fa-calendar-check"></i> <span data-i18n="orderBtn">ORDER NOW / BOOK VISIT</span></button>
+    </div>
+  </div>
+
+  <!-- enriched footer with contact & links -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>Demble Landsites</h4>
+        <p><i class="fas fa-map-marker-alt"></i> Nakifuma, Uganda</p>
+        <p><i class="fas fa-phone-alt"></i> <a href="tel:+256752264757">+256 752 264 757</a></p>
+        <p><i class="fab fa-whatsapp"></i> <a href="https://wa.me/256752264757">WhatsApp</a></p>
+        <p><i class="fas fa-envelope"></i> <a href="mailto:info@demble.land">info@demble.land</a></p>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="quickLinks">Quick Links</h4>
+        <a href="index.html" data-i18n="home">Home</a>
+        <a href="#" data-i18n="ourLands">Our Lands</a>
+        <a href="https://maps.app.goo.gl/3bmYE8Mckg99ZufY8?g_st=aw" target="_blank" data-i18n="viewLocation">View Location</a>
+        <a href="#" data-i18n="contactUs">Contact Us</a>
+        <a href="#" data-i18n="privacy">Privacy Policy</a>
+      </div>
+    </div>
+    <div class="copyright">
+      <p>© 2025 Demble Landsites — <span class="gold-text" data-i18n="goldStandard">gold standard</span> in land</p>
+    </div>
+  </footer>
+
+  <script type="module">
+    // ========== FIREBASE INIT ==========
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCXxG2nN3m9Y66XFZ6bwZ9h5HU0Ge5_NeY",
+      authDomain: "dembe-249a0.firebaseapp.com",
+      projectId: "dembe-249a0",
+      storageBucket: "dembe-249a0.firebasestorage.app",
+      messagingSenderId: "1091754769869",
+      appId: "1:1091754769869:web:a08e0981e5ae3762511884",
+      measurementId: "G-44EK6PF0KC"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ========== BURGER & OVERLAY with white X ==========
+    const burger = document.getElementById('burgerBtn');
+    const overlay = document.getElementById('menuOverlay');
+    const closeOverlayBtn = document.getElementById('closeOverlayBtn');
+    const body = document.body;
+
+    function closeMenu() {
+      burger.classList.remove('open');
+      overlay.classList.remove('active');
+      body.style.overflow = 'auto';
+    }
+
+    burger.addEventListener('click', () => {
+      burger.classList.toggle('open');
+      overlay.classList.toggle('active');
+      body.style.overflow = overlay.classList.contains('active') ? 'hidden' : 'auto';
+    });
+
+    closeOverlayBtn.addEventListener('click', closeMenu);
+
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeMenu();
+    });
+
+    document.querySelectorAll('.menu-content a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        if (link.getAttribute('target') !== '_blank') {
+          closeMenu();
+        }
+      });
+    });
+
+    // ========== LANGUAGE TRANSLATIONS (EN / LU) ==========
+    const translations = {
+      en: {
+        home: 'HOME',
+        ourLands: 'OUR LANDS',
+        viewLocation: 'VIEW LOCATION',
+        contactUs: 'CONTACT US',
+        quickLinks: 'Quick Links',
+        privacy: 'Privacy Policy',
+        headline: 'PREMIUM LAND PLOTS',
+        popupText: 'Change language to Luganda?',
+        ok: 'OK',
+        cancel: 'Cancel',
+        orderBtn: 'ORDER NOW / BOOK VISIT',
+        goldStandard: 'gold standard',
+        empty: 'No land listings yet. Check back soon.'
+      },
+      lg: {
+        home: 'EWA YAMWE',
+        ourLands: 'EBITUNDU BYETTU',
+        viewLocation: 'ENDO GYE LIRI',
+        contactUs: 'KU TUNAMBUZE',
+        quickLinks: 'ENDO ZINO',
+        privacy: 'EBIKWAATO',
+        headline: 'EBITUNDU EBIRUNGI',
+        popupText: 'Okusimba olulimi Luganda?',
+        ok: 'OK',
+        cancel: 'Ggwe',
+        orderBtn: 'KOLA ORDER / OKULABA',
+        goldStandard: 'ekirabo ky\'zaabu',
+        empty: 'Tewali bitundu kati. Kyoleke edda.'
+      }
+    };
+
+    let currentLang = 'en';
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang][key]) {
+          el.innerText = translations[lang][key];
+        }
+      });
+      document.getElementById('langDisplay').innerText = currentLang === 'en' ? 'EN / LU' : 'LU / EN';
+      
+      // update empty message if visible
+      const emptyDiv = document.querySelector('.empty-message');
+      if (emptyDiv && emptyDiv.hasAttribute('data-i18n')) {
+        emptyDiv.innerText = translations[lang].empty;
+      }
+    }
+
+    document.getElementById('langToggle').addEventListener('click', () => {
+      const newLang = currentLang === 'en' ? 'lg' : 'en';
+      setLanguage(newLang);
+    });
+
+    // ========== LANGUAGE POPUP (auto 5s) ==========
+    const popup = document.getElementById('langPopup');
+    const popupOk = document.getElementById('popupOk');
+    const popupCancel = document.getElementById('popupCancel');
+
+    setTimeout(() => {
+      popup.classList.remove('hidden');
+    }, 500);
+
+    const autoHide = setTimeout(() => {
+      popup.classList.add('hidden');
+    }, 5000);
+
+    popupOk.addEventListener('click', () => {
+      clearTimeout(autoHide);
+      setLanguage('lg');
+      popup.classList.add('hidden');
+    });
+
+    popupCancel.addEventListener('click', () => {
+      clearTimeout(autoHide);
+      popup.classList.add('hidden');
+    });
+
+    // ========== LOAD PLOTS FROM FIRESTORE (ONLY USER ADDED) ==========
+    const grid = document.getElementById('plotsGrid');
+    const loadingMsg = document.getElementById('loadingMessage');
+
+    async function loadPlots() {
+      try {
+        const q = query(collection(db, "branding_products"), orderBy("createdAt", "desc"));
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+          grid.innerHTML = `<div class="empty-message" data-i18n="empty">${translations[currentLang].empty}</div>`;
+          return;
+        }
+
+        let html = '';
+        snap.forEach(docSnap => {
+          const p = docSnap.data();
+          const id = docSnap.id;
+          if (!p.title || !p.price || !p.image) return;
+
+          const oldPrice = p.oldPrice ? p.oldPrice : Math.round(p.price * 1.2);
+          const badge = p.badge || 'FOR SALE';
+          const priceNum = Number(p.price);
+          const oldPriceNum = Number(oldPrice);
+
+          html += `
+            <div class="plot-card" data-id="${id}" data-title="${p.title}" data-price="${priceNum}" data-old="${oldPriceNum}" data-image="${p.image}" data-desc="${p.description || 'Beautiful plot'}" data-map="${p.mapLink || 'https://maps.app.goo.gl/3bmYE8Mckg99ZufY8?g_st=aw'}" data-category="${p.category || ''}">
+              <span class="badge">${badge}</span>
+              <img src="${p.image}" alt="${p.title}" class="plot-image" loading="lazy">
+              <div class="plot-info">
+                <div class="plot-title">${p.title}</div>
+                <div class="price-wrapper">
+                  <span class="old-price">UGX ${oldPriceNum.toLocaleString()}</span>
+                  <span class="current-price">UGX ${priceNum.toLocaleString()}</span>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+
+        if (html === '') {
+          grid.innerHTML = `<div class="empty-message" data-i18n="empty">${translations[currentLang].empty}</div>`;
+        } else {
+          grid.innerHTML = html;
+        }
+
+        document.querySelectorAll('.plot-card').forEach(card => {
+          card.addEventListener('click', openModal);
+        });
+
+      } catch (error) {
+        console.error('Firestore error:', error);
+        grid.innerHTML = `<div class="empty-message">Error loading lands. Please refresh.</div>`;
+      }
+    }
+
+    loadPlots();
+
+    // ========== MODAL ==========
+    const modal = document.getElementById('modalOverlay');
+    const modalImg = document.getElementById('modalImage');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalPrice = document.getElementById('modalPrice');
+    const modalDesc = document.getElementById('modalDesc');
+    const modalMapLink = document.getElementById('modalMapLink');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const orderBtn = document.getElementById('orderBtn');
+
+    function openModal(e) {
+      const card = e.currentTarget;
+      const title = card.dataset.title;
+      const price = card.dataset.price;
+      const image = card.dataset.image;
+      const desc = card.dataset.desc;
+      const mapLink = card.dataset.map;
+
+      modalImg.src = image;
+      modalTitle.innerText = title;
+      modalPrice.innerText = `UGX ${Number(price).toLocaleString()}`;
+      modalDesc.innerText = desc;
+      modalMapLink.href = mapLink;
+
+      modal.classList.add('active');
+      body.style.overflow = 'hidden';
+    }
+
+    closeModalBtn.addEventListener('click', () => {
+      modal.classList.remove('active');
+      body.style.overflow = 'auto';
+    });
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('active');
+        body.style.overflow = 'auto';
+      }
+    });
+
+    orderBtn.addEventListener('click', () => {
+      alert('Booking feature coming soon. Call +256 752 264 757');
+    });
+
+    // initial language set
+    setLanguage('en');
+  </script>
+</body>
+</html>
